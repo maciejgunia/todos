@@ -35667,8 +35667,10 @@ var removeFromDatabase = async (db, id, userId) => {
   };
 };
 var handler = verifyJwt(async (event, context) => {
+  var _a, _b;
   context.callbackWaitsForEmptyEventLoop = false;
-  const userId = context.clientContext.user.sub;
+  console.log(context, MONGODB_URI);
+  const userId = (_b = (_a = context == null ? void 0 : context.clientContext) == null ? void 0 : _a.user) == null ? void 0 : _b.sub;
   const db = await connectToDatabase(MONGODB_URI);
   switch (event.httpMethod) {
     case "GET":
