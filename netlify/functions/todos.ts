@@ -62,7 +62,6 @@ const handler: Handler = verifyJwt(async (event, context) => {
     // we keep the DB connection alive
     context.callbackWaitsForEmptyEventLoop = false;
 
-    console.log(context, MONGODB_URI);
     const userId = context?.identityContext?.claims?.sub;
     const db = await connectToDatabase(MONGODB_URI);
 

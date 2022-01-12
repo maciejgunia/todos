@@ -1,54 +1,22 @@
-import { FC, useContext } from "react";
+import { FC, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { TokenContext } from "../App";
+import { removeTodo, createTodo, fetchHello } from "../api";
 
 const Todos: FC = () => {
+    const [todo, setTodo] = useState<string>("");
     const queryClient = useQueryClient();
-    const token = useContext(TokenContext);
-    const fetchHello = async () => {
-        const response = await fetch("/.netlify/functions/todos", { headers: [["Authorization", `Bearer ${token}`]] });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return response.json();
-    };
-
-    const removeTodo = async (id: any) => {
-        const response = await fetch(`/.netlify/functions/todos/${id}`, {
-            headers: [["Authorization", `Bearer ${token}`]],
-            method: "DELETE"
-        });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return Promise.resolve();
-    };
-
     const mutation = useMutation(removeTodo, {
         onSuccess: () => {
             queryClient.invalidateQueries("todos");
         }
     });
-
-    const createTodo = async (name: string) => {
-        const response = await fetch(`/.netlify/functions/todos`, {
-            headers: [["Authorization", `Bearer ${token}`]],
-            method: "POST",
-            body: JSON.stringify({ name })
-        });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return Promise.resolve();
-    };
-
     const createMutation = useMutation(createTodo, {
         onSuccess: () => {
+            setTodo("");
             queryClient.invalidateQueries("todos");
         }
     });
-
-    const { data, isSuccess, isLoading } = useQuery<any[]>("todos", fetchHello);
+    const { data, isSuccess, isLoading } = useQuery<any>("todos", fetchHello);
 
     return (
         <>
@@ -56,12 +24,13 @@ const Todos: FC = () => {
                 action=""
                 onSubmit={(event) => {
                     event.preventDefault();
-                    createMutation.mutate(new FormData(event.target as HTMLFormElement).get("todo") as string);
-                    (event.target as HTMLFormElement).reset();
+                    createMutation.mutate(todo);
                 }}
             >
-                <input name="todo" type="text" />
-                <button type="submit">Add new</button>
+                <input name="todo" type="text" value={todo} onChange={(event) => setTodo(`${event.target.value}`)} />
+                <button disabled={todo.length === 0} type="submit">
+                    Add new
+                </button>
             </form>
             {isLoading && <div>Loading</div>}
             {isSuccess &&
