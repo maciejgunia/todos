@@ -24,6 +24,7 @@
     },
     "scripts": {
         "dev": "netlify dev",
+        "net": "netlify env:list",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",

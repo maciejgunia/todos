@@ -63,7 +63,7 @@ const handler: Handler = verifyJwt(async (event, context) => {
     context.callbackWaitsForEmptyEventLoop = false;
 
     console.log(context, MONGODB_URI);
-    const userId = context?.clientContext?.user?.sub;
+    const userId = context?.identityContext?.claims?.sub;
     const db = await connectToDatabase(MONGODB_URI);
 
     switch (event.httpMethod) {

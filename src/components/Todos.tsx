@@ -21,12 +21,11 @@ const Todos: FC = () => {
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
-        return response.json();
+        return Promise.resolve();
     };
 
     const mutation = useMutation(removeTodo, {
-        onSuccess: (data) => {
-            console.log("success", data);
+        onSuccess: () => {
             queryClient.invalidateQueries("todos");
         }
     });
@@ -45,12 +44,11 @@ const Todos: FC = () => {
 
     const createMutation = useMutation(createTodo, {
         onSuccess: () => {
-            console.log("success", data);
             queryClient.invalidateQueries("todos");
         }
     });
 
-    const { isLoading, data }: any = useQuery<any[]>("todos", fetchHello);
+    const { data, isSuccess, isLoading } = useQuery<any[]>("todos", fetchHello);
 
     return (
         <>
@@ -66,10 +64,10 @@ const Todos: FC = () => {
                 <button type="submit">Add new</button>
             </form>
             {isLoading && <div>Loading</div>}
-            {!isLoading &&
-                data.map((todo: any) => (
+            {isSuccess &&
+                data?.map((todo: any) => (
                     <div key={todo._id}>
-                        {todo._id} {todo.name} <button onClick={() => mutation.mutate(todo._id)}>Remove</button>
+                        {todo.name} <button onClick={() => mutation.mutate(todo._id)}>Remove</button>
                     </div>
                 ))}
         </>
