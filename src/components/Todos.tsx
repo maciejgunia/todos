@@ -1,45 +1,24 @@
-import { FC, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { removeTodo, createTodo, fetchHello } from "../api";
+import { FC } from "react";
+import { useQuery } from "react-query";
+import { fetchTodos } from "../api";
+import TodoForm from "./TodoForm";
+import Todo from "./Todo";
 
 const Todos: FC = () => {
-    const [todo, setTodo] = useState<string>("");
-    const queryClient = useQueryClient();
-    const mutation = useMutation(removeTodo, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("todos");
-        }
-    });
-    const createMutation = useMutation(createTodo, {
-        onSuccess: () => {
-            setTodo("");
-            queryClient.invalidateQueries("todos");
-        }
-    });
-    const { data, isSuccess, isLoading } = useQuery<any>("todos", fetchHello);
+    const { data, isSuccess, isLoading } = useQuery<any>("todos", fetchTodos);
 
     return (
-        <>
-            <form
-                action=""
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    createMutation.mutate(todo);
-                }}
-            >
-                <input name="todo" type="text" value={todo} onChange={(event) => setTodo(`${event.target.value}`)} />
-                <button disabled={todo.length === 0} type="submit">
-                    Add new
-                </button>
-            </form>
-            {isLoading && <div>Loading</div>}
-            {isSuccess &&
-                data?.map((todo: any) => (
-                    <div key={todo._id}>
-                        {todo.name} <button onClick={() => mutation.mutate(todo._id)}>Remove</button>
-                    </div>
-                ))}
-        </>
+        <div className="max-w-lg m-auto p-4">
+            <TodoForm />
+            {isLoading && <div>Loading todos...</div>}
+            {isSuccess && (
+                <div className="mt-4">
+                    {data?.map((todo: any) => (
+                        <Todo key={todo._id} todo={todo}></Todo>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 

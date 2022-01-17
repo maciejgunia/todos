@@ -7,14 +7,18 @@ const Profile = () => {
         return <div>Loading ...</div>;
     }
 
-    return isAuthenticated ? (
+    return (
         <div>
-            <img src={user?.picture} alt={user?.name} />
-            <h2>{user?.name}</h2>
-            <p>{user?.email}</p>
+            {isAuthenticated && (
+                <div className="flex">
+                    <img className="w-16 rounded-xl" src={user?.picture} alt={user?.name} />
+                    <div className="flex flex-col items-start p-2 justify-around">
+                        <p>{user?.name}</p>
+                        <p>{user?.email}</p>
+                    </div>
+                </div>
+            )}
         </div>
-    ) : (
-        <></>
     );
 };
 

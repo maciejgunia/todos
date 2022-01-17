@@ -1,25 +1,19 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import "./App.css";
-import LoginButton from "./components/LoginButton";
-import LogoutButton from "./components/LogoutButton";
-import Profile from "./components/Profile";
+import Navbar from "./components/Navbar";
 import Todos from "./components/Todos";
+import Message from "./components/Message";
 
 export const instance = axios.create();
+export const AuthContext = React.createContext(false);
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: false
-        }
-    }
-});
+const queryClient = new QueryClient();
 
 function App() {
-    const { getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently, isLoading, isAuthenticated } = useAuth0();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
@@ -44,12 +38,13 @@ function App() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <div className="App">
-                <LoginButton />
-                <LogoutButton />
-                <Profile />
+            <AuthContext.Provider value={isLoggedIn}>
+                <Navbar></Navbar>
+                {isLoading && <Message text="Checking authentication status..." />}
+                {!isLoading && !isAuthenticated && <Message text="You have to be logged in to use the app!" />}
+                {!isLoading && isAuthenticated && !isLoggedIn && <Message text="Getting an access token for you..." />}
                 {isLoggedIn && <Todos />}
-            </div>
+            </AuthContext.Provider>
         </QueryClientProvider>
     );
 }
