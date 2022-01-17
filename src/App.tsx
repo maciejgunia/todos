@@ -2,7 +2,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import "./App.css";
 import Navbar from "./components/Navbar";
 import Todos from "./components/Todos";
 import Message from "./components/Message";

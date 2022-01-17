@@ -25,7 +25,7 @@ const connectToDatabase = async (uri) => {
     return cachedDb;
 };
 
-const pushToDatabase = async (db, data, userId) => {
+const createTodo = async (db, data, userId) => {
     if (data.name) {
         await db.collection("todos").insertMany([{ ...data, userId }]);
         return { statusCode: 201 };
@@ -34,7 +34,7 @@ const pushToDatabase = async (db, data, userId) => {
     }
 };
 
-const queryDatabase = async (db, userId) => {
+const getTodos = async (db, userId) => {
     const todos = await db.collection("todos").find({ userId }).toArray();
 
     return {
@@ -46,8 +46,19 @@ const queryDatabase = async (db, userId) => {
     };
 };
 
-const removeFromDatabase = async (db, id, userId) => {
+const removeTodo = async (db, id, userId) => {
     await db.collection("todos").deleteOne({ _id: new ObjectId(id), userId });
+
+    return {
+        statusCode: 200,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+};
+
+const updateTodo = async (db, id, userId, data) => {
+    await db.collection("todos").replaceOne({ _id: new ObjectId(id), userId }, { ...data, userId });
 
     return {
         statusCode: 200,
@@ -67,11 +78,13 @@ const handler: Handler = verifyJwt(async (event, context) => {
 
     switch (event.httpMethod) {
         case "GET":
-            return queryDatabase(db, userId);
+            return getTodos(db, userId);
         case "POST":
-            return pushToDatabase(db, JSON.parse(event.body), userId);
+            return createTodo(db, JSON.parse(event.body), userId);
+        case "PUT":
+            return updateTodo(db, event.path.split("/")[4], userId, JSON.parse(event.body));
         case "DELETE":
-            return removeFromDatabase(db, event.path.split("/")[4], userId);
+            return removeTodo(db, event.path.split("/")[4], userId);
         default:
             return { statusCode: 400 };
     }
