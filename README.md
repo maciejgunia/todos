@@ -1,6 +1,12 @@
-# todo
+# Stack:
 
--   add spinners for adding / deleting todos
+-   React
+-   Netlify functions
+-   MongoDB
+-   Auth0
+-   React Query
+-   Tailwind CSS
+-   Axios
 
 # Getting Started with Create React App
 

@@ -4,19 +4,12 @@ import { createTodo } from "../api";
 import { MdOutlineDonutLarge, MdPlaylistAdd } from "react-icons/md";
 
 const TodoForm: FC = () => {
-    const [isLoading, setIsLoading] = useState(false);
     const queryClient = useQueryClient();
     const [todo, setTodo] = useState<string>("");
-    const create = useMutation(createTodo, {
-        onMutate: () => {
-            setIsLoading(true);
-        },
+    const mutation = useMutation(createTodo, {
         onSuccess: async () => {
             await queryClient.invalidateQueries("todos");
             setTodo("");
-        },
-        onSettled: () => {
-            setIsLoading(false);
         }
     });
 
@@ -25,7 +18,7 @@ const TodoForm: FC = () => {
             className="flex"
             onSubmit={(event) => {
                 event.preventDefault();
-                create.mutate(todo);
+                mutation.mutate(todo);
             }}
         >
             <input
@@ -35,9 +28,9 @@ const TodoForm: FC = () => {
                 value={todo}
                 onChange={(event) => setTodo(`${event.target.value}`)}
             />
-            <button className="todo-button" disabled={todo.length === 0} type="submit">
-                {!isLoading && <MdPlaylistAdd />}
-                {isLoading && <MdOutlineDonutLarge className="animate-spin" />}
+            <button aria-label="create" className="todo-button" disabled={todo.length === 0} type="submit">
+                {!mutation.isLoading && <MdPlaylistAdd />}
+                {mutation.isLoading && <MdOutlineDonutLarge className="animate-spin" />}
             </button>
         </form>
     );
