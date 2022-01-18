@@ -23,8 +23,8 @@ const TodoForm: FC = () => {
         >
             <input
                 className="rounded-md border focus:border-gray-800 py-1 px-2 mr-2 flex-grow outline-none"
-                name="todo"
                 type="text"
+                aria-label="name"
                 value={todo}
                 onChange={(event) => setTodo(`${event.target.value}`)}
             />

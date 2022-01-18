@@ -4,12 +4,10 @@ import Status from "../domain/Status";
 import TodoData from "../domain/Todo";
 import UpdateButton from "./UpdateButton";
 
-const StartButton: FC<{ todo: TodoData }> = ({ todo }) => {
-    return (
-        <UpdateButton todo={todo} label="start" status={Status.IN_PROGRESS}>
-            <MdOutlinePlayArrow />
-        </UpdateButton>
-    );
-};
+const StartButton: FC<{ todo: TodoData }> = ({ todo }) => (
+    <UpdateButton todo={todo} label="start" status={Status.IN_PROGRESS}>
+        <MdOutlinePlayArrow />
+    </UpdateButton>
+);
 
 export default StartButton;

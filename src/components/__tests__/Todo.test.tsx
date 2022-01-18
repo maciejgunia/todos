@@ -1,18 +1,13 @@
 import { render, screen } from "@testing-library/react";
-import React, { FC, ReactElement } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
-import Status from "../domain/Status";
-import Todo from "./Todo";
+import Status from "../../domain/Status";
+import Todo from "../Todo";
+import { Wrapper } from "../../testHelpers";
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false
-        }
-    }
-});
-
-const Wrapper: FC = ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+jest.mock("../StartButton");
+jest.mock("../CompleteButton");
+jest.mock("../RemoveButton");
+jest.mock("../PauseButton");
+jest.mock("../ReopenButton");
 
 describe("TODO", () => {
     test("should display proper buttons when not started", () => {

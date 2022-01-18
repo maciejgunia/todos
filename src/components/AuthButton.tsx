@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { FC, useContext } from "react";
 import { MdLogin, MdLogout } from "react-icons/md";
-import { AuthContext } from "../App";
+import { AuthContext } from "../providers/AppProvider";
 
 const AuthButton: FC = () => {
     const { loginWithRedirect, logout } = useAuth0();
