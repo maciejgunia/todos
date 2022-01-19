@@ -5,7 +5,7 @@ import { AuthContext } from "../providers/AppProvider";
 
 const AuthButton: FC = () => {
     const { loginWithRedirect, logout } = useAuth0();
-    const isLoggedIn = useContext(AuthContext);
+    const { isLoggedIn } = useContext(AuthContext);
     const handler = isLoggedIn ? () => logout({ returnTo: window.location.origin }) : () => loginWithRedirect();
     const icon = isLoggedIn ? <MdLogout /> : <MdLogin />;
 

@@ -3,7 +3,7 @@ import { Wrapper } from "../../testHelpers";
 import TodoForm from "../TodoForm";
 import userEvent from "@testing-library/user-event";
 
-fdescribe("TodoForm", () => {
+describe("TodoForm", () => {
     test("should add a todo", () => {
         render(
             <Wrapper>
