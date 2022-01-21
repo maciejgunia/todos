@@ -6,10 +6,18 @@ const useRemoveTodo = (todo: TodoData) => {
     const queryClient = useQueryClient();
 
     return useMutation(() => removeTodo(todo), {
-        onSuccess: async () => {
+        onMutate: () => {
+            const prevTodos = queryClient.getQueryData("todos");
+
             queryClient.setQueryData("todos", (old: TodoData[] | undefined) =>
                 typeof old !== "undefined" ? old.filter((t) => t._id !== todo._id) : []
             );
+
+            return () => queryClient.setQueryData("todos", prevTodos);
+        },
+        onError: async (error, _, rollback) => {
+            if (rollback) rollback();
+            console.error(error);
         }
     });
 };
