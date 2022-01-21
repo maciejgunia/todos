@@ -1,17 +1,9 @@
-import { FC, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { createTodo } from "../api";
+import { FC } from "react";
 import { MdOutlineDonutLarge, MdPlaylistAdd } from "react-icons/md";
+import useCreateTodo from "../hooks/useCreateTodo";
 
 const TodoForm: FC = () => {
-    const queryClient = useQueryClient();
-    const [todo, setTodo] = useState<string>("");
-    const mutation = useMutation(createTodo, {
-        onSuccess: async () => {
-            await queryClient.invalidateQueries("todos");
-            setTodo("");
-        }
-    });
+    const { todo, setTodo, mutation } = useCreateTodo();
 
     return (
         <form

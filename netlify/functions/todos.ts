@@ -27,8 +27,8 @@ const connectToDatabase = async (uri) => {
 
 const createTodo = async (db, data, userId) => {
     if (data.name) {
-        await db.collection("todos").insertMany([{ ...data, userId }]);
-        return { statusCode: 201 };
+        const { insertedId } = await db.collection("todos").insertOne({ ...data, userId });
+        return { statusCode: 200, body: JSON.stringify({ ...data, _id: insertedId }) };
     } else {
         return { statusCode: 422 };
     }

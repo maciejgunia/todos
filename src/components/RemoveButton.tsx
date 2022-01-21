@@ -1,15 +1,13 @@
 import { FC } from "react";
 import { MdClear, MdOutlineDonutLarge } from "react-icons/md";
-import { useMutation, useQueryClient } from "react-query";
-import { removeTodo } from "../api";
 import TodoData from "../domain/Todo";
+import useRemoveTodo from "../hooks/useRemoveTodo";
 
 const RemoveButton: FC<{ todo: TodoData }> = ({ todo }) => {
-    const queryClient = useQueryClient();
-    const mutation = useMutation(removeTodo, { onSuccess: async () => queryClient.invalidateQueries("todos") });
+    const mutation = useRemoveTodo(todo);
 
     return (
-        <button aria-label="remove" className="todo-button" onClick={() => mutation.mutate(todo)}>
+        <button aria-label="remove" className="todo-button" onClick={() => mutation.mutate()}>
             {mutation.isLoading && <MdOutlineDonutLarge className="animate-spin" />}
             {!mutation.isLoading && <MdClear />}
         </button>
