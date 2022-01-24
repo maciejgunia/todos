@@ -9,13 +9,12 @@ import { AuthContext } from "../providers/AppProvider";
 
 const Todos: FC = () => {
     const { data, isSuccess, isLoading } = useQuery<any>("todos", fetchTodos);
-    const { isPending, isAuthenticated, isLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, isAuthLoading } = useContext(AuthContext);
 
     return (
         <>
-            {isPending && <Message text="Checking authentication status..." />}
-            {!isPending && !isAuthenticated && <Message text="You have to be logged in to use the app!" />}
-            {!isPending && isAuthenticated && !isLoggedIn && <Message text="Getting an access token for you..." />}
+            {isAuthLoading && <Message text="Checking authentication status..." />}
+            {!isAuthLoading && !isLoggedIn && <Message text="You have to be logged in to use the app!" />}
             {isLoggedIn && (
                 <div className="max-w-lg m-auto p-4">
                     <TodoForm />

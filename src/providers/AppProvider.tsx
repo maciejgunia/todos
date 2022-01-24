@@ -4,11 +4,12 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { axios } from "../lib/axios";
 
 const queryClient = new QueryClient();
-export const AuthContext = React.createContext({ isLoggedIn: false, isPending: false, isAuthenticated: false });
+export const AuthContext = React.createContext({ isLoggedIn: false, isAuthLoading: true });
 
 const AppProvider: FC = ({ children }) => {
-    const { getAccessTokenSilently, isLoading, isAuthenticated } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAuthLoading, setIsAuthLoading] = useState(true);
 
     useEffect(() => {
         const getAccessToken = async () => {
@@ -25,6 +26,8 @@ const AppProvider: FC = ({ children }) => {
             } catch (e: any) {
                 console.error(e.message);
             }
+
+            setIsAuthLoading(false);
         };
 
         getAccessToken();
@@ -32,9 +35,7 @@ const AppProvider: FC = ({ children }) => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthContext.Provider value={{ isLoggedIn, isPending: isLoading, isAuthenticated }}>
-                {children}
-            </AuthContext.Provider>
+            <AuthContext.Provider value={{ isLoggedIn, isAuthLoading }}>{children}</AuthContext.Provider>
         </QueryClientProvider>
     );
 };
